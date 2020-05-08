@@ -39,38 +39,7 @@ class Parfum_model extends CI_MODEL{
             }
         }
         
-        public function add_penjualan($id){
-            if($this->input->post("adm", true)){
-                $adm = $this->nominal($this->input->post("adm", true));
-            } else {
-                $adm = 0;
-            }
-            
-            if($this->input->post("ongkir", true)){
-                $ongkir = $this->nominal($this->input->post("ongkir", true));
-            } else {
-                $ongkir = 0;
-            }
-            
-            if($this->input->post("rekening", true)){
-                $rekening = $this->input->post("rekening", true);
-            } else {
-                $rekening = '';
-            }
-
-
-            $data = [
-                "id_penjualan" => $id,
-                "tgl_penjualan" => $this->input->post("tgl_penjualan"),
-                "nama" => $this->input->post("nama"),
-                "no_hp" => $this->nominal($this->input->post("no_hp")),
-                "alamat" => $this->nominal($this->input->post("alamat")),
-                "metode" => $this->input->post("metode"),
-                "adm" => $adm,
-                "rekening" => $rekening,
-                "ongkir" => $ongkir
-            ];
-
+        public function add_penjualan($data){
             $this->db->insert("penjualan", $data);
         }
         
@@ -250,6 +219,24 @@ class Parfum_model extends CI_MODEL{
 
             $this->db->insert("biaya_overhead", $data);
         }
+
+        public function add_agen($data){
+            $this->db->insert("agen", $data);
+            return $this->db->insert_id();
+        }
+        
+        public function add_sales($data){
+            $this->db->insert("sales", $data);
+            return $this->db->insert_id();
+        }
+
+        public function add_penjualan_agen($data){
+            $this->db->insert("penjualan_agen", $data);
+        }
+        
+        public function add_penjualan_sales($data){
+            $this->db->insert("penjualan_sales", $data);
+        }
     // add
 
     // get last id
@@ -393,21 +380,21 @@ class Parfum_model extends CI_MODEL{
         }
 
         // hapus?
-        public function get_pembelian_by_periode($periode){
-            // var_dump($periode);
-            $data = explode("%20", $periode);
+        // public function get_pembelian_by_periode($periode){
+        //     // var_dump($periode);
+        //     $data = explode("%20", $periode);
 
-            $bulan = $data[0];
-            $tahun = $data[1];
+        //     $bulan = $data[0];
+        //     $tahun = $data[1];
 
-            $this->db->select("*, SUM(harga) as total");
-            $this->db->from("pembelian as a");
-            $this->db->join("detail_pembelian as b", "a.id_pembelian = b.id_pembelian");
-            $this->db->where("MONTH(tgl_pembelian)", $bulan);
-            $this->db->where("YEAR(tgl_pembelian)", $tahun);
-            $this->db->group_by("a.id_pembelian");
-            return $this->db->get()->result_array();
-        }
+        //     $this->db->select("*, SUM(harga) as total");
+        //     $this->db->from("pembelian as a");
+        //     $this->db->join("detail_pembelian as b", "a.id_pembelian = b.id_pembelian");
+        //     $this->db->where("MONTH(tgl_pembelian)", $bulan);
+        //     $this->db->where("YEAR(tgl_pembelian)", $tahun);
+        //     $this->db->group_by("a.id_pembelian");
+        //     return $this->db->get()->result_array();
+        // }
 
         public function get_pembelian_bahan_by_jenis_by_periode($jenis, $periode){
             $data = explode("%20", $periode);
@@ -630,6 +617,13 @@ class Parfum_model extends CI_MODEL{
             return $this->db->get()->row_array();
         }
 
+        public function get_detail_tambahan_by_id_penjualan($id){
+            $this->db->from("penggunaan_bahan_tambahan as a");
+            $this->db->join("bahan as b", "a.id_bahan = b.id_bahan");
+            $this->db->where("id_penjualan", $id);
+            return $this->db->get()->result_array();
+        }
+
         public function get_total_barang_by_id_penjualan($id){
             $this->db->select("SUM(harga*qty) as total");
             $this->db->from("detail_penjualan_barang");
@@ -768,6 +762,156 @@ class Parfum_model extends CI_MODEL{
             $this->db->where("id", $id);
             return $this->db->get()->row_array();
         }
+
+        public function get_agen_by_id($id){
+            $this->db->where("id_agen", $id);
+            $this->db->from("agen");
+            return $this->db->get()->row_array();
+        }
+        
+        public function get_sales_by_id($id){
+            $this->db->where("id_sales", $id);
+            $this->db->from("sales");
+            return $this->db->get()->row_array();
+        }
+
+        public function get_all_penjualan_by_tipe($tipe){
+            if($tipe == "Agen")
+                $this->db->select("a.id_penjualan, tgl_penjualan, nama, no_hp, alamat, metode, SUM(harga*qty) as total, nama_agen");
+            else
+                $this->db->select("a.id_penjualan, tgl_penjualan, nama, no_hp, alamat, metode, SUM(harga*qty) as total, nama_sales");
+
+            $this->db->from("penjualan as a");
+            $this->db->join("detail_penjualan as b", "a.id_penjualan = b.id_penjualan", "left");
+            if($tipe == "Agen"){
+                $this->db->join("penjualan_agen as c", "a.id_penjualan = c.id_penjualan");
+                $this->db->join("agen as d", "d.id_agen = c.id_agen");
+            } else {
+                $this->db->join("penjualan_sales as c", "a.id_penjualan = c.id_penjualan");
+                $this->db->join("sales as d", "d.id_sales = c.id_sales");
+            }
+            $this->db->group_by("b.id_penjualan");
+            $this->db->order_by("tgl_penjualan", "DESC");
+            return $this->db->get()->result_array();
+        }
+
+        public function get_id_agen_by_id_penjualan($id){
+            $this->db->from("penjualan as a");
+            $this->db->join("penjualan_agen as b", "a.id_penjualan = b.id_penjualan");
+            $this->db->where("a.id_penjualan", $id);
+            return $this->db->get()->row_array();
+        }
+        
+        public function get_id_sales_by_id_penjualan($id){
+            $this->db->from("penjualan as a");
+            $this->db->join("penjualan_sales as b", "a.id_penjualan = b.id_penjualan");
+            $this->db->where("a.id_penjualan", $id);
+            return $this->db->get()->row_array();
+        }
+
+        public function get_penjualan_by_periode($bulan, $tahun){
+            $this->db->from("penjualan as a");
+            $this->db->where("MONTH(tgl_penjualan)", $bulan);
+            $this->db->where("YEAR(tgl_penjualan)", $tahun);
+            return $this->db->get()->result_array();
+        }
+        
+        public function get_penjualan_transfer_by_periode($bulan, $tahun, $rek){
+            $this->db->from("penjualan as a");
+            $this->db->where("MONTH(tgl_penjualan)", $bulan);
+            $this->db->where("YEAR(tgl_penjualan)", $tahun);
+            $this->db->where("metode", "transfer");
+            $this->db->where("rekening", $rek);
+            return $this->db->get()->result_array();
+        }
+
+        public function get_sales_by_periode($bulan, $tahun){
+            $this->db->from("penjualan as a");
+            $this->db->join("penjualan_sales as b", "a.id_penjualan = b.id_penjualan");
+            $this->db->join("sales as c", "b.id_sales = c.id_sales");
+            $this->db->where("MONTH(tgl_penjualan)", $bulan);
+            $this->db->where("YEAR(tgl_penjualan)", $tahun);
+            $this->db->group_by("b.id_sales");
+            return $this->db->get()->result_array();
+        }
+
+        public function get_penjualan_sales_by_periode($bulan, $tahun, $id_sales){
+            $this->db->from("penjualan as a");
+            $this->db->join("penjualan_sales as b", "a.id_penjualan = b.id_penjualan");
+            $this->db->join("sales as c", "b.id_sales = c.id_sales");
+            $this->db->where("MONTH(tgl_penjualan)", $bulan);
+            $this->db->where("YEAR(tgl_penjualan)", $tahun);
+            $this->db->where("b.id_sales", $id_sales);
+            return $this->db->get()->result_array();
+        }
+        
+        public function get_agen_by_periode($bulan, $tahun){
+            $this->db->from("penjualan as a");
+            $this->db->join("penjualan_agen as b", "a.id_penjualan = b.id_penjualan");
+            $this->db->join("agen as c", "b.id_agen = c.id_agen");
+            $this->db->where("MONTH(tgl_penjualan)", $bulan);
+            $this->db->where("YEAR(tgl_penjualan)", $tahun);
+            $this->db->group_by("b.id_agen");
+            return $this->db->get()->result_array();
+        }
+
+        public function get_penjualan_agen_by_periode($bulan, $tahun, $id_agen){
+            $this->db->from("penjualan as a");
+            $this->db->join("penjualan_agen as b", "a.id_penjualan = b.id_penjualan");
+            $this->db->join("agen as c", "b.id_agen = c.id_agen");
+            $this->db->where("MONTH(tgl_penjualan)", $bulan);
+            $this->db->where("YEAR(tgl_penjualan)", $tahun);
+            $this->db->where("b.id_agen", $id_agen);
+            return $this->db->get()->result_array();
+        }
+        
+        public function get_pembelian_by_periode($bulan, $tahun){
+            $this->db->from("pembelian as a");
+            $this->db->where("MONTH(tgl_pembelian)", $bulan);
+            $this->db->where("YEAR(tgl_pembelian)", $tahun);
+            return $this->db->get()->result_array();
+        }
+        
+        public function get_pembelian_transfer_by_periode($bulan, $tahun, $rek){
+            $this->db->from("pembelian as a");
+            $this->db->where("MONTH(tgl_pembelian)", $bulan);
+            $this->db->where("YEAR(tgl_pembelian)", $tahun);
+            $this->db->where("metode", "transfer");
+            $this->db->where("rekening", $rek);
+            return $this->db->get()->result_array();
+        }
+
+        public function get_penjualan_barang_by_periode($bulan, $tahun){
+            $this->db->select("id_barang, SUM(qty) as total");
+            $this->db->from("penjualan as a");
+            $this->db->join("detail_penjualan_barang as b", "a.id_penjualan = b.id_penjualan");
+            $this->db->where("MONTH(tgl_penjualan)", $bulan);
+            $this->db->where("YEAR(tgl_penjualan)", $tahun);
+            $this->db->group_by("id_barang");
+            return $this->db->get()->result_array();
+        }
+        
+        public function get_penjualan_parfum_by_periode($bulan, $tahun){
+            $this->db->select("id_parfum, SUM(qty) as total");
+            $this->db->from("penjualan as a");
+            $this->db->join("detail_penjualan as b", "a.id_penjualan = b.id_penjualan");
+            $this->db->where("MONTH(tgl_penjualan)", $bulan);
+            $this->db->where("YEAR(tgl_penjualan)", $tahun);
+            $this->db->group_by("id_parfum");
+            return $this->db->get()->result_array();
+        }
+        
+        public function get_penjualan_tambahan_by_periode($bulan, $tahun){
+            $this->db->select("id_bahan, SUM(qty) as total");
+            $this->db->from("penjualan as a");
+            $this->db->join("penggunaan_bahan_tambahan as b", "a.id_penjualan = b.id_penjualan");
+            $this->db->where("MONTH(tgl_penjualan)", $bulan);
+            $this->db->where("YEAR(tgl_penjualan)", $tahun);
+            $this->db->group_by("id_bahan");
+            return $this->db->get()->result_array();
+        }
+
+        
     // get get by id
 
     // get all
@@ -835,6 +979,16 @@ class Parfum_model extends CI_MODEL{
 
         public function get_all_overhead(){
             $this->db->from("biaya_overhead");
+            return $this->db->get()->result_array();
+        }
+
+        public function get_all_agen(){
+            $this->db->from("agen");
+            return $this->db->get()->result_array();
+        }
+        
+        public function get_all_sales(){
+            $this->db->from("sales");
             return $this->db->get()->result_array();
         }
     // get all
@@ -986,6 +1140,26 @@ class Parfum_model extends CI_MODEL{
             $this->db->update("biaya_overhead", $data);
         }
 
+        public function edit_agen_by_id($id, $data){
+            $this->db->where("id_agen", $id);
+            $this->db->update("agen", $data);
+            return $this->db->affected_rows();
+        }
+        
+        public function edit_sales_by_id($id, $data){
+            $this->db->where("id_sales", $id);
+            $this->db->update("sales", $data);
+            return $this->db->affected_rows();
+        }
+
+        public function edit_penjualan_agen_sales_by_id_penjualan($tipe, $id, $data){
+            $this->db->where("id_penjualan", $id);
+            
+            if($tipe == "Agen")
+                $this->db->update("penjualan_agen", $data);
+            else
+                $this->db->update("penjualan_sales", $data);
+        }
     // edit
 
     // delete

@@ -17,6 +17,20 @@
       </div>
 
       
+      <li class="nav-item" id="agen">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#droptwo" aria-expanded="true" aria-controls="droptwo">
+          <i class="fas fa-user"></i>
+          <span>Agen & Sales</span>
+        </a>
+        <div id="droptwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+          <div class="bg-primary py-2 collapse-inner rounded">
+            <h6 class="collapse-header text-light">Agen & Sales</h6>
+            <a class="collapse-item text-light" href="<?= base_url()?>admin/agen">Agen</a>
+            <a class="collapse-item text-light" href="<?= base_url()?>admin/sales">Sales</a>
+          </div>
+        </div>
+      </li>
+      
       <li class="nav-item" id="bahan">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#dropone" aria-expanded="true" aria-controls="dropone">
           <i class="fas fa-prescription-bottle"></i>
@@ -66,12 +80,27 @@
         </a>
       </li>
       
+      
       <li class="nav-item" id="penjualan">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#dropthree" aria-expanded="true" aria-controls="dropthree">
+          <i class="fas fa-truck"></i>
+          <span>Penjualan</span>
+        </a>
+        <div id="dropthree" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+          <div class="bg-primary py-2 collapse-inner rounded">
+            <h6 class="collapse-header text-light">Penjualan</h6>
+            <a class="collapse-item text-light" href="<?= base_url()?>kasir/penjualanagen">Penjualan Agen</a>
+            <a class="collapse-item text-light" href="<?= base_url()?>kasir/penjualansales">Penjualan Sales</a>
+          </div>
+        </div>
+      </li>
+
+      <!-- <li class="nav-item" id="penjualan">
         <a class="nav-link collapsed" href="<?= base_url()?>kasir/penjualan">
           <i class="fas fa-fw fa-truck"></i>
           <span>Penjualan</span>
         </a>
-      </li>
+      </li> -->
       
       <li class="nav-item" id="laporan">
         <a class="nav-link collapsed" href="<?= base_url()?>laporan/">

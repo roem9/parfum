@@ -28,7 +28,30 @@
                         </div>
                         <div class="card-body cus-font">
                             <form action="<?= base_url()?>kasir/add_penjualan" method="post">
+                                <input type="hidden" name="tipe" value="<?= $tipe?>">
                                 <div id="formModalAddPenjualan1">
+                                    <?php if($tipe == 'Agen'):?>
+                                        <div class="form-group">
+                                            <label for="id_agen">Nama Agen</label>
+                                            <select name="id_agen" id="id_agen" class="form-control form-control-sm" required>
+                                                <option value="">Pilih Agen</option>
+                                                <?php foreach ($agen as $data) :?>
+                                                    <option value="<?= $data['id_agen']?>"><?= $data['nama_agen']?></option>
+                                                <?php endforeach;?>
+                                            </select>
+                                        </div>
+                                    <?php elseif($tipe == 'Sales') :?>
+                                        <div class="form-group">
+                                            <label for="id_sales">Nama Sales</label>
+                                            <select name="id_sales" id="id_sales" class="form-control form-control-sm" required>
+                                                <option value="">Pilih Sales</option>
+                                                <?php foreach ($sales as $data) :?>
+                                                    <option value="<?= $data['id_sales']?>"><?= $data['nama_sales']?></option>
+                                                <?php endforeach;?>
+                                            </select>
+                                        </div>
+                                    <?php endif;?>
+                                    <div id="form-agen-sales"></div>
                                     <div class="form-group">
                                         <label for="tgl_penjualan">Tgl Penjualan</label>
                                         <input type="date" name="tgl_penjualan" id="tgl_penjualan" class="form-control form-control-sm" required>
@@ -198,7 +221,29 @@
                                 <div class="alert alert-info">
                                     <i class="fa fa-info-circle text-info mr-1"></i> menu ini untuk mengubah data penjualan
                                 </div>
+                                <input type="hidden" name="tipe" value="<?= $tipe?>">
                                 <input type="hidden" name="id_penjualan" id="id_penjualan_edit">
+                                <?php if($tipe == 'Agen'):?>
+                                    <div class="form-group">
+                                        <label for="id_agen">Nama Agen</label>
+                                        <select name="id_agen" id="id_agen_edit" class="form-control form-control-sm" required>
+                                            <option value="">Pilih Agen</option>
+                                            <?php foreach ($agen as $data) :?>
+                                                <option value="<?= $data['id_agen']?>"><?= $data['nama_agen']?></option>
+                                            <?php endforeach;?>
+                                        </select>
+                                    </div>
+                                <?php elseif($tipe == 'Sales') :?>
+                                    <div class="form-group">
+                                        <label for="id_sales">Nama Sales</label>
+                                        <select name="id_sales" id="id_sales_edit" class="form-control form-control-sm" required>
+                                            <option value="">Pilih Sales</option>
+                                            <?php foreach ($sales as $data) :?>
+                                                <option value="<?= $data['id_sales']?>"><?= $data['nama_sales']?></option>
+                                            <?php endforeach;?>
+                                        </select>
+                                    </div>
+                                <?php endif;?>
                                 <div class="form-group">
                                     <label for="tgl_penjualan">Tgl Penjualan</label>
                                     <input type="date" name="tgl_penjualan" id="tgl_penjualan_edit" class="form-control form-control-sm">
@@ -429,7 +474,7 @@
     <?php endif; ?>
 
     <!-- DataTales Example -->
-    <div class="card shadow mb-4" style="max-width:1000px">
+    <div class="card shadow mb-4">
         <div class="card-header">
             <ul class="nav nav-tabs card-header-tabs">
                 <li class="nav-item">
@@ -447,6 +492,11 @@
                         <th>Nama Lengkap</th>
                         <th width=15%>No Handphone</th>
                         <th width="15%">Total</th>
+                        <?php if($tipe == "Agen"):?>
+                            <th>Agen</th>
+                        <?php else:?>
+                            <th>Sales</th>
+                        <?php endif;?>
                         <th width="8%">detail</th>
                     </thead>
                     <tbody>
@@ -460,6 +510,11 @@
                                     <td><?= $penjualan['nama']?></td>
                                     <td><?= $penjualan['no_hp']?></td>
                                     <td><?= rupiah($penjualan['total'])?></td>
+                                    <?php if($tipe == "Agen"):?>
+                                        <td><?= $penjualan['nama_agen']?></td>
+                                    <?php else:?>
+                                        <td><?= $penjualan['nama_sales']?></td>
+                                    <?php endif;?>
                                     <td><a href="#modalEditPenjualan" class="badge badge-warning modal-detail-penjualan" data-toggle="modal" data-id="<?= $penjualan['id_penjualan']?>">detail</a></td>
                                 </tr>
                         <?php endforeach;?>
@@ -724,6 +779,27 @@
 
 
                 $("#listFormModalEditPenjualan41").html(html);
+            }
+        })
+
+        <?php if ($tipe == "Agen"):?>
+            let url = "<?= base_url()?>kasir/get_id_agen_by_id_penjualan";
+        <?php else:?>
+            let url = "<?= base_url()?>kasir/get_id_sales_by_id_penjualan";
+        <?php endif;?>
+
+        $.ajax({
+            url: url,
+            data: {id: id},
+            async: true,
+            dataType: 'json',
+            method: "POST",
+            success: function(data){
+                <?php if ($tipe == "Agen"):?>
+                    $("#id_agen_edit").val(data.id_agen)
+                <?php else:?>
+                    $("#id_sales_edit").val(data.id_sales)
+                <?php endif;?>
             }
         })
     });
