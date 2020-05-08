@@ -376,6 +376,35 @@ class Laporan extends CI_CONTROLLER{
             $this->load->view("laporan/export-penjualan-barang", $data);
             // var_dump($data);
 
+        } else if($laporan == "Laporan HPP"){
+            
+            $bulan = $this->input->post("bulan", TRUE);
+            $tahun = $this->input->post("tahun", TRUE);
+            $filename = "Laporan_HPP_" . $bulan . "_" . $tahun;
+            
+            header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            header('Content-Disposition: attachment;filename='.$filename.'xls');
+
+            $month = ["1" => "Januari", "2" => "Februari", "3" => "Maret", "4" => "April", "5" => "Mei", "6" => "Juni", "7" => "Juli", "8" => "Agustus", "9" => "September", "10" => "Oktober", "11" => "November", "12" => "Desember"];
+
+            $data['title'] = "Laporan HPP " . $month[$bulan] ." " . $tahun;
+
+            $data['bahan_baku_awal'] = $this->Parfum_model->get_persediaan_bahan_baku_awal($bulan, $tahun);
+            $data['bahan_pembantu_awal'] = $this->Parfum_model->get_persediaan_bahan_pembantu_awal($bulan, $tahun);
+
+            $data['pembelian_bahan_baku'] = $this->Parfum_model->get_pembelian_bahan_by_jenis_by_periode("Baku", $bulan, $tahun);
+
+            $data['pembelian_bahan_pembantu'] = $this->Parfum_model->get_pembelian_bahan_by_jenis_by_periode("Pembantu", $bulan, $tahun);
+
+            $data['bahan_baku_akhir'] = $this->Parfum_model->get_persediaan_bahan_baku_akhir($bulan, $tahun);
+            $data['bahan_pembantu_akhir'] = $this->Parfum_model->get_persediaan_bahan_pembantu_akhir($bulan, $tahun);
+
+            $data['biaya_kerja'] = $this->Parfum_model->get_biaya_kerja_by_periode($bulan, $tahun);
+            $data['biaya_overhead'] = $this->Parfum_model->get_biaya_overhead_by_periode($bulan, $tahun);
+            // $data['other'] = $this->Parfum_model->get_other_by_periode($periode);
+
+            // var_dump($data);
+            $this->load->view("laporan/export-hpp", $data);
         }
     }
 }

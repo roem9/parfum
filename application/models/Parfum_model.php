@@ -396,10 +396,10 @@ class Parfum_model extends CI_MODEL{
         //     return $this->db->get()->result_array();
         // }
 
-        public function get_pembelian_bahan_by_jenis_by_periode($jenis, $periode){
-            $data = explode("%20", $periode);
-            $bulan = $data[0];
-            $tahun = $data[1];
+        public function get_pembelian_bahan_by_jenis_by_periode($jenis, $bulan, $tahun){
+            // $data = explode("%20", $periode);
+            // $bulan = $data[0];
+            // $tahun = $data[1];
 
             $this->db->select("SUM(harga) as total");
             $this->db->from("pembelian_bahan");
@@ -410,12 +410,12 @@ class Parfum_model extends CI_MODEL{
             return $this->db->get()->result_array();
         }
 
-        public function get_persediaan_bahan_baku_awal($periode){
+        public function get_persediaan_bahan_baku_awal($bulan, $tahun){
             // var_dump($periode);
-            $data = explode("%20", $periode);
+            // $data = explode("%20", $periode);
 
-            $bulan = $data[0];
-            $tahun = $data[1];
+            // $bulan = $data[0];
+            // $tahun = $data[1];
             $tgl = "{$tahun}-{$bulan}-01";
 
             $total_beli = 0;
@@ -448,12 +448,12 @@ class Parfum_model extends CI_MODEL{
             return $total_beli - $total_penyetokan;
         }
         
-        public function get_persediaan_bahan_pembantu_awal($periode){
+        public function get_persediaan_bahan_pembantu_awal($bulan, $tahun){
             // var_dump($periode);
-            $data = explode("%20", $periode);
+            // $data = explode("%20", $periode);
 
-            $bulan = $data[0];
-            $tahun = $data[1];
+            // $bulan = $data[0];
+            // $tahun = $data[1];
             $tgl = "{$tahun}-{$bulan}-01";
 
             $total_beli = 0;
@@ -487,12 +487,12 @@ class Parfum_model extends CI_MODEL{
             return $total_beli - $total_jual;
         }
         
-        public function get_persediaan_bahan_baku_akhir($periode){
+        public function get_persediaan_bahan_baku_akhir($bulan, $tahun){
             // var_dump($periode);
-            $data = explode("%20", $periode);
+            // $data = explode("%20", $periode);
 
-            $bulan = $data[0];
-            $tahun = $data[1];
+            // $bulan = $data[0];
+            // $tahun = $data[1];
             if($bulan == 12){
                 $bulan = 1;
                 $tahun = $tahun - 1;
@@ -533,12 +533,12 @@ class Parfum_model extends CI_MODEL{
             return $total_beli - $total_penyetokan;
         }
         
-        public function get_persediaan_bahan_pembantu_akhir($periode){
+        public function get_persediaan_bahan_pembantu_akhir($bulan, $tahun){
             // var_dump($periode);
-            $data = explode("%20", $periode);
+            // $data = explode("%20", $periode);
 
-            $bulan = $data[0];
-            $tahun = $data[1];
+            // $bulan = $data[0];
+            // $tahun = $data[1];
             
             if($bulan == 12){
                 $bulan = 1;
@@ -581,12 +581,12 @@ class Parfum_model extends CI_MODEL{
             return $total_beli - $total_jual;
         }
 
-        public function get_biaya_kerja_by_periode($periode){
+        public function get_biaya_kerja_by_periode($bulan, $tahun){
             // var_dump($periode);
-            $data = explode("%20", $periode);
+            // $data = explode("%20", $periode);
 
-            $bulan = $data[0];
-            $tahun = $data[1];
+            // $bulan = $data[0];
+            // $tahun = $data[1];
 
             $this->db->from("biaya_overhead");
             $this->db->where("MONTH(tgl)", $bulan);
@@ -595,12 +595,12 @@ class Parfum_model extends CI_MODEL{
             return $this->db->get()->result_array();
         }
         
-        public function get_biaya_overhead_by_periode($periode){
+        public function get_biaya_overhead_by_periode($bulan, $tahun){
             // var_dump($periode);
-            $data = explode("%20", $periode);
+            // $data = explode("%20", $periode);
 
-            $bulan = $data[0];
-            $tahun = $data[1];
+            // $bulan = $data[0];
+            // $tahun = $data[1];
 
             $this->db->from("biaya_overhead");
             $this->db->where("MONTH(tgl)", $bulan);

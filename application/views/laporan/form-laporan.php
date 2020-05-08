@@ -20,6 +20,7 @@
                     <label for="laporan">Jenis Laporan</label>
                     <select name="laporan" id="laporan" class="form-control form-control-sm">
                         <option value="">Pilih Laporan</option>
+                        <option value="Laporan HPP">Laporan HPP</option>
                         <option value="Laporan Penjualan Keseluruhan">Laporan Penjualan Keseluruhan</option>
                         <option value="Laporan Penjualan Transfer">Laporan Penjualan Transfer</option>
                         <option value="Laporan Penjualan Sales">Laporan Penjualan Sales</option>
