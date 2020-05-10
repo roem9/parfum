@@ -237,6 +237,16 @@ class Parfum_model extends CI_MODEL{
         public function add_penjualan_sales($data){
             $this->db->insert("penjualan_sales", $data);
         }
+
+        public function add_pengeluaran($data){
+            $this->db->insert("pengeluaran", $data);
+            return $this->db->insert_id();
+        }
+        
+        public function add_pemasukan($data){
+            $this->db->insert("pemasukan", $data);
+            return $this->db->insert_id();
+        }
     // add
 
     // get last id
@@ -911,7 +921,34 @@ class Parfum_model extends CI_MODEL{
             return $this->db->get()->result_array();
         }
 
+        public function get_pengeluaran_by_id($id){
+            $this->db->where("id_pengeluaran", $id);
+            $this->db->from("pengeluaran");
+            return $this->db->get()->row_array();
+        }
         
+        public function get_pemasukan_by_id($id){
+            $this->db->where("id_pemasukan", $id);
+            $this->db->from("pemasukan");
+            return $this->db->get()->row_array();
+        }
+
+        public function get_pemasukan_by_periode_by_keterangan($bulan, $tahun, $ket){
+            $this->db->where("MONTH(tgl_pemasukan)", $bulan);
+            $this->db->where("YEAR(tgl_pemasukan)", $tahun);
+            $this->db->where("keterangan", $ket);
+            $this->db->from("pemasukan");
+            return $this->db->get()->result_array();
+        }
+        
+        public function get_pengeluaran_by_periode($bulan, $tahun){
+            $this->db->where("MONTH(tgl_pengeluaran)", $bulan);
+            $this->db->where("YEAR(tgl_pengeluaran)", $tahun);
+            $this->db->from("pengeluaran");
+            return $this->db->get()->result_array();
+        }
+
+
     // get get by id
 
     // get all
@@ -991,6 +1028,16 @@ class Parfum_model extends CI_MODEL{
             $this->db->from("sales");
             return $this->db->get()->result_array();
         }
+
+        public function get_all_pengeluaran(){
+            $this->db->from("pengeluaran");
+            return $this->db->get()->result_array();
+        }
+        
+        public function get_all_pemasukan(){
+            $this->db->from("pemasukan");
+            return $this->db->get()->result_array();
+        }
     // get all
 
     // edit
@@ -1026,8 +1073,8 @@ class Parfum_model extends CI_MODEL{
                 $data = [
                     "tgl" => date("Y-m-d"),
                     "id_parfum" => $parfum['id_parfum'],
-                    "harga" => $this->nominal($this->input->post("harga", TRUE)),
-                    "min_stok" => $this->input->post("min_stok", TRUE)
+                    "harga" => $parfum['harga'],
+                    "min_stok" => $parfum['min_stok']
                 ];
 
                 $this->db->insert("history_parfum", $data);
@@ -1159,6 +1206,18 @@ class Parfum_model extends CI_MODEL{
                 $this->db->update("penjualan_agen", $data);
             else
                 $this->db->update("penjualan_sales", $data);
+        }
+        
+        public function edit_pengeluaran_by_id($id, $data){
+            $this->db->where("id_pengeluaran", $id);
+            $this->db->update("pengeluaran", $data);
+            return $this->db->affected_rows();
+        }
+        
+        public function edit_pemasukan_by_id($id, $data){
+            $this->db->where("id_pemasukan", $id);
+            $this->db->update("pemasukan", $data);
+            return $this->db->affected_rows();
         }
     // edit
 

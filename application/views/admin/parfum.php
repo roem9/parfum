@@ -323,7 +323,7 @@
                 </tr>`;
 
                 if(data[0].harga != null){
-                    for (let i = 1; i < data.length; i++) {
+                    for (let i = 0; i < data.length; i++) {
                         harga = data[i].harga;
 
                         reverse = harga.toString().split('').reverse().join(''),

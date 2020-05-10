@@ -5,7 +5,7 @@
         return $hasil_rupiah;
     }
 ?>
-
+<h1><?= "Periode " . $title?></h1>
 <?php if($bca):?>
     <h1>Transfer BCA</h1>
     <table class="table table-sm" border=1 style="border-collapse: collapse">

@@ -66,13 +66,34 @@
         </a>
       </li>
 
-      <li class="nav-item" id="pembelian">
+      <!-- <li class="nav-item" id="pembelian">
         <a class="nav-link collapsed" href="<?= base_url()?>produksi/pembelian">
           <i class="fas fa-fw fa-truck-loading"></i>
           <span>Pembelian</span>
         </a>
+      </li> -->
+
+      <li class="nav-item" id="pembelian">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#droptiga" aria-expanded="true" aria-controls="droptiga">
+          <i class="fas fa-truck-loading"></i>
+          <span>Pengeluaran</span>
+        </a>
+        <div id="droptiga" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+          <div class="bg-primary py-2 collapse-inner rounded">
+            <h6 class="collapse-header text-light">Pengeluaran</h6>
+            <a class="collapse-item text-light" href="<?= base_url()?>produksi/pembelian">Pembelian</a>
+            <a class="collapse-item text-light" href="<?= base_url()?>admin/pengeluaran">Lain-Lain</a>
+          </div>
+        </div>
       </li>
 
+      <li class="nav-item" id="pemasukan">
+        <a class="nav-link collapsed" href="<?= base_url()?>admin/pemasukan">
+          <i class="fas fa-fw fa-money-check"></i>
+          <span>Pemasukan</span>
+        </a>
+      </li>
+      
       <li class="nav-item" id="penyetokan">
         <a class="nav-link collapsed" href="<?= base_url()?>admin/penyetokan">
           <i class="fas fa-fw fa-boxes"></i>

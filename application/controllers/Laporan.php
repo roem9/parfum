@@ -53,11 +53,14 @@ class Laporan extends CI_CONTROLLER{
     }
 
     public function cetak_laporan(){
+        
+        $month = ["1" => "Januari", "2" => "Februari", "3" => "Maret", "4" => "April", "5" => "Mei", "6" => "Juni", "7" => "Juli", "8" => "Agustus", "9" => "September", "10" => "Oktober", "11" => "November", "12" => "Desember"];
         $laporan = $this->input->post("laporan", TRUE);
 
         if($laporan == "Laporan Penjualan Transfer"){
             $bulan = $this->input->post("bulan", TRUE);
             $tahun = $this->input->post("tahun", TRUE);
+            $data['title'] = $month[$bulan] ." " . $tahun;
             
             $filename = "Penjualan_Transfer_" . $bulan . "_" . $tahun;
             header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
@@ -143,11 +146,13 @@ class Laporan extends CI_CONTROLLER{
             $this->load->view("laporan/export-penjualan-transfer", $data);
 
         } else if($laporan == "Laporan Penjualan Keseluruhan"){
+            $bulan = $this->input->post("bulan", TRUE);
+            $tahun = $this->input->post("tahun", TRUE);
             $filename = "Penjualan_Keseluruhan_" . $bulan . "_" . $tahun;
             header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             header('Content-Disposition: attachment;filename='.$filename.'xls');
-            $bulan = $this->input->post("bulan", TRUE);
-            $tahun = $this->input->post("tahun", TRUE);
+
+            $data['title'] = "Laporan Penjualan " . $month[$bulan] ." " . $tahun;
 
             $data['data'] = [];
 
@@ -174,11 +179,15 @@ class Laporan extends CI_CONTROLLER{
                 }
                 // $data['data'][$i]['detail'] = 
             }
+
+            $data['shopee'] = $this->Parfum_model->get_pemasukan_by_periode_by_keterangan($bulan, $tahun, "Shopee");
+            $data['agen'] = $this->Parfum_model->get_pemasukan_by_periode_by_keterangan($bulan, $tahun, "Agen");
+
             $this->load->view("laporan/export-penjualan", $data);
         } else if($laporan == "Laporan Penjualan Sales"){
-            $data['title'] = "Laporan Penjualan Sales";
             $bulan = $this->input->post("bulan", TRUE);
             $tahun = $this->input->post("tahun", TRUE);
+            $data['title'] = "Laporan Penjualan Sales " . $month[$bulan] . $tahun;
             $filename = "Penjualan_Sales_" . $bulan . "_" . $tahun;
             header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             header('Content-Disposition: attachment;filename='.$filename.'xls');
@@ -212,13 +221,13 @@ class Laporan extends CI_CONTROLLER{
                 }
             }
             $this->load->view("laporan/export-penjualan-sales", $data);
-        } else if($laporan == "Laporan Penjualan Agen"){
-            $data['title'] = "Laporan Penjualan Agen";
             $bulan = $this->input->post("bulan", TRUE);
             $tahun = $this->input->post("tahun", TRUE);
+        } else if($laporan == "Laporan Penjualan Agen"){
             $filename = "Penjualan_Agen_" . $bulan . "_" . $tahun;
             header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             header('Content-Disposition: attachment;filename='.$filename.'xls');
+            $data['title'] = "Laporan Penjualan Agen " . $month[$bulan] . $tahun;
             
             $data['data'] = [];
 
@@ -256,6 +265,7 @@ class Laporan extends CI_CONTROLLER{
             header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             header('Content-Disposition: attachment;filename='.$filename.'xls');
 
+            $data['title'] = "Laporan Pembelian " . $month[$bulan] ." " . $tahun;
             $data['data'] = [];
 
             $pembelian = $this->Parfum_model->get_pembelian_by_periode($bulan, $tahun);
@@ -283,6 +293,8 @@ class Laporan extends CI_CONTROLLER{
             $filename = "Pembelian_Transfer_" . $bulan . "_" . $tahun;
             // header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             // header('Content-Disposition: attachment;filename='.$filename.'xls');
+
+            $data['title'] = "Laporan Pembelian " . $month[$bulan] ." " . $tahun;
 
             $data['bca'] = [];
 
@@ -348,6 +360,8 @@ class Laporan extends CI_CONTROLLER{
             $bulan = $this->input->post("bulan", TRUE);
             $tahun = $this->input->post("tahun", TRUE);
             
+            $data['title'] = "Laporan Penjualan Barang " .$month[$bulan] ." " . $tahun;
+
             $filename = "Penjualan_Barang_" . $bulan . "_" . $tahun;
             header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             header('Content-Disposition: attachment;filename='.$filename.'xls');
@@ -385,8 +399,6 @@ class Laporan extends CI_CONTROLLER{
             header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             header('Content-Disposition: attachment;filename='.$filename.'xls');
 
-            $month = ["1" => "Januari", "2" => "Februari", "3" => "Maret", "4" => "April", "5" => "Mei", "6" => "Juni", "7" => "Juli", "8" => "Agustus", "9" => "September", "10" => "Oktober", "11" => "November", "12" => "Desember"];
-
             $data['title'] = "Laporan HPP " . $month[$bulan] ." " . $tahun;
 
             $data['bahan_baku_awal'] = $this->Parfum_model->get_persediaan_bahan_baku_awal($bulan, $tahun);
@@ -405,6 +417,21 @@ class Laporan extends CI_CONTROLLER{
 
             // var_dump($data);
             $this->load->view("laporan/export-hpp", $data);
+        } else if($laporan == "Laporan Pengeluaran"){
+            
+            $bulan = $this->input->post("bulan", TRUE);
+            $tahun = $this->input->post("tahun", TRUE);
+            $filename = "Laporan_Pengeluaran_" . $bulan . "_" . $tahun;
+            
+            header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            header('Content-Disposition: attachment;filename='.$filename.'xls');
+
+            $data['title'] = "Laporan Pengeluaran Lain-Lain " . $month[$bulan] ." " . $tahun;
+
+            $data['pengeluaran'] = $this->Parfum_model->get_pengeluaran_by_periode($bulan, $tahun);
+
+            // var_dump($data);
+            $this->load->view("laporan/export-pengeluaran", $data);
         }
     }
 }

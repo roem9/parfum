@@ -129,7 +129,28 @@ class Admin extends CI_CONTROLLER{
         $this->load->view("admin/sales", $data);
         $this->load->view("templates/footer");
     }
+    
+    public function pengeluaran(){
+        $data['title'] = "List Pengeluaran Lain-Lain";
 
+        $data['pengeluaran'] = $this->Parfum_model->get_all_pengeluaran();
+
+        $this->load->view("templates/header", $data);
+        $this->load->view("templates/sidebar");
+        $this->load->view("admin/pengeluaran", $data);
+        $this->load->view("templates/footer");
+    }
+    
+    public function pemasukan(){
+        $data['title'] = "List Pemasukan";
+
+        $data['pemasukan'] = $this->Parfum_model->get_all_pemasukan();
+
+        $this->load->view("templates/header", $data);
+        $this->load->view("templates/sidebar");
+        $this->load->view("admin/pemasukan", $data);
+        $this->load->view("templates/footer");
+    }
     // add
         public function add_bahan(){
             $this->Parfum_model->add_bahan();
@@ -222,6 +243,33 @@ class Admin extends CI_CONTROLLER{
                 $this->session->set_flashdata('pesan', '<div class="alert alert-danger alert-dismissible fade show" role="alert">Gagal <strong>menambahkan</strong> sales<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
             redirect($_SERVER['HTTP_REFERER']);
         }
+
+        public function add_pengeluaran(){
+            $data['tgl_pengeluaran'] = $this->input->post("tgl_pengeluaran", TRUE);
+            $data['keterangan'] = $this->input->post("keterangan", TRUE);
+            $data['nominal'] = $this->nominal($this->input->post("nominal", TRUE));
+
+            $result = $this->Parfum_model->add_pengeluaran($data);
+            if($result)
+                $this->session->set_flashdata('pesan', '<div class="alert alert-success alert-dismissible fade show" role="alert">Berhasil <strong>menambahkan</strong> pengeluaran<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+            else
+                $this->session->set_flashdata('pesan', '<div class="alert alert-danger alert-dismissible fade show" role="alert">Gagal <strong>menambahkan</strong> pengeluaran<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+            redirect($_SERVER['HTTP_REFERER']);
+        }
+        
+        public function add_pemasukan(){
+            $data['tgl_pemasukan'] = $this->input->post("tgl_pemasukan", TRUE);
+            $data['keterangan'] = $this->input->post("keterangan", TRUE);
+            $data['nama'] = $this->input->post("nama", TRUE);
+            $data['nominal'] = $this->nominal($this->input->post("nominal", TRUE));
+
+            $result = $this->Parfum_model->add_pemasukan($data);
+            if($result)
+                $this->session->set_flashdata('pesan', '<div class="alert alert-success alert-dismissible fade show" role="alert">Berhasil <strong>menambahkan</strong> pemasukan<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+            else
+                $this->session->set_flashdata('pesan', '<div class="alert alert-danger alert-dismissible fade show" role="alert">Gagal <strong>menambahkan</strong> pemasukan<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+            redirect($_SERVER['HTTP_REFERER']);
+        }
     // add
 
     // edit
@@ -293,6 +341,37 @@ class Admin extends CI_CONTROLLER{
             else
                 $this->session->set_flashdata('pesan', '<div class="alert alert-danger alert-dismissible fade show" role="alert">Gagal <strong>merubah</strong> data sales<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
             redirect($_SERVER['HTTP_REFERER']);
+        }
+
+        public function edit_pengeluaran(){
+            $id = $this->input->post("id_pengeluaran");
+            $data['tgl_pengeluaran'] = $this->input->post("tgl_pengeluaran", TRUE);
+            $data['keterangan'] = $this->input->post("keterangan", TRUE);
+            $data['nominal'] = $this->nominal($this->input->post("nominal", TRUE));
+
+            $result = $this->Parfum_model->edit_pengeluaran_by_id($id, $data);
+            if($result)
+                $this->session->set_flashdata('pesan', '<div class="alert alert-success alert-dismissible fade show" role="alert">Berhasil <strong>merubah</strong> data pengeluaran<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+            else
+                $this->session->set_flashdata('pesan', '<div class="alert alert-danger alert-dismissible fade show" role="alert">Gagal <strong>merubah</strong> data pengeluaran<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+            redirect($_SERVER['HTTP_REFERER']);
+
+        }
+        
+        public function edit_pemasukan(){
+            $id = $this->input->post("id_pemasukan");
+            $data['tgl_pemasukan'] = $this->input->post("tgl_pemasukan", TRUE);
+            $data['keterangan'] = $this->input->post("keterangan", TRUE);
+            $data['nominal'] = $this->nominal($this->input->post("nominal", TRUE));
+            $data['nama'] = $this->input->post("nama", TRUE);
+
+            $result = $this->Parfum_model->edit_pemasukan_by_id($id, $data);
+            if($result)
+                $this->session->set_flashdata('pesan', '<div class="alert alert-success alert-dismissible fade show" role="alert">Berhasil <strong>merubah</strong> data pemasukan<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+            else
+                $this->session->set_flashdata('pesan', '<div class="alert alert-danger alert-dismissible fade show" role="alert">Gagal <strong>merubah</strong> data pemasukan<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+            redirect($_SERVER['HTTP_REFERER']);
+
         }
     // edit
 
@@ -378,6 +457,18 @@ class Admin extends CI_CONTROLLER{
             $data = $this->Parfum_model->get_sales_by_id($id);
             echo json_encode($data);
         }
+        
+        public function get_pengeluaran_by_id(){
+            $id = $this->input->post("id");
+            $data = $this->Parfum_model->get_pengeluaran_by_id($id);
+            echo json_encode($data);
+        }
+        
+        public function get_pemasukan_by_id(){
+            $id = $this->input->post("id");
+            $data = $this->Parfum_model->get_pemasukan_by_id($id);
+            echo json_encode($data);
+        }
     // get
 
     // delete
@@ -423,4 +514,13 @@ class Admin extends CI_CONTROLLER{
             redirect('admin/penyetokan');
         }
     // delete
+
+    
+    // other function
+        public function nominal($data){
+            $data = str_replace("Rp. ", "", $data);
+            $data = str_replace(".", "", $data);
+            return $data;
+        }
+    // other function
 }

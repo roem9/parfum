@@ -32,7 +32,9 @@
             <?php 
                 $no = 0;
                 $to = 0;
+                $to_qty = 0;
                 foreach ($data['penjualan'] as $k => $data) :
+                    $qty = 0;
                     $total[$k] = 0;
                     $row = COUNT($data['detail']['parfum']) + COUNT($data['detail']['barang']) + COUNT($data['detail']['tambahan']);
                     
@@ -42,12 +44,14 @@
                     
                     foreach ($data['detail']['parfum'] as $j => $parfum){
                         $total[$k] += $parfum['harga'] * $parfum['qty'];
+                        $qty = $parfum['qty'];
                     }
                     
                     foreach ($data['detail']['tambahan'] as $j => $tambahan){
                         $total[$k] += $tambahan['harga'] * $tambahan['qty'];
                     }
                     $to += $total[$k];
+                    $to_qty += $qty;
                 ?>
                 <tr>
                     <td rowspan="<?= $row?>"><?= ++$no?></td>
@@ -106,6 +110,11 @@
             <tr>
                 <td colspan="4">Total</td>
                 <td><?= rupiah($to)?></td>
+            </tr>
+            <tr>
+                <td colspan="4">Total Botol</td>
+                <td><?= $to_qty?></td>
+                <td colspan="2"><?= rupiah(6500 * $to_qty)?></td>
             </tr>
         </tbody>
     </table>

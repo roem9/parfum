@@ -5,7 +5,7 @@
         return $hasil_rupiah;
     }
 ?>
-
+<h1><?= "Periode " . $title?></h1>
 <?php if($barang):?>
     <h1>Penjualan Barang</h1>
     <table class="table table-sm" border=1 style="border-collapse: collapse">
