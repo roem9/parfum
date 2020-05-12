@@ -248,6 +248,10 @@ class Admin extends CI_CONTROLLER{
             $data['tgl_pengeluaran'] = $this->input->post("tgl_pengeluaran", TRUE);
             $data['keterangan'] = $this->input->post("keterangan", TRUE);
             $data['nominal'] = $this->nominal($this->input->post("nominal", TRUE));
+            $data['metode'] = $this->input->post("metode", TRUE);
+            if($this->input->post("rekening", TRUE)){
+                $data['rekening'] = $this->input->post("rekening", TRUE);
+            }
 
             $result = $this->Parfum_model->add_pengeluaran($data);
             if($result)
@@ -262,6 +266,10 @@ class Admin extends CI_CONTROLLER{
             $data['keterangan'] = $this->input->post("keterangan", TRUE);
             $data['nama'] = $this->input->post("nama", TRUE);
             $data['nominal'] = $this->nominal($this->input->post("nominal", TRUE));
+            $data['metode'] = $this->input->post("metode", TRUE);
+            if($this->input->post("rekening", TRUE)){
+                $data['rekening'] = $this->input->post("rekening", TRUE);
+            }
 
             $result = $this->Parfum_model->add_pemasukan($data);
             if($result)
@@ -348,6 +356,10 @@ class Admin extends CI_CONTROLLER{
             $data['tgl_pengeluaran'] = $this->input->post("tgl_pengeluaran", TRUE);
             $data['keterangan'] = $this->input->post("keterangan", TRUE);
             $data['nominal'] = $this->nominal($this->input->post("nominal", TRUE));
+            $data['metode'] = $this->input->post("metode", TRUE);
+            if($this->input->post("rekening", TRUE)){
+                $data['rekening'] = $this->input->post("rekening", TRUE);
+            }
 
             $result = $this->Parfum_model->edit_pengeluaran_by_id($id, $data);
             if($result)
@@ -364,6 +376,10 @@ class Admin extends CI_CONTROLLER{
             $data['keterangan'] = $this->input->post("keterangan", TRUE);
             $data['nominal'] = $this->nominal($this->input->post("nominal", TRUE));
             $data['nama'] = $this->input->post("nama", TRUE);
+            $data['metode'] = $this->input->post("metode", TRUE);
+            if($this->input->post("rekening", TRUE)){
+                $data['rekening'] = $this->input->post("rekening", TRUE);
+            }
 
             $result = $this->Parfum_model->edit_pemasukan_by_id($id, $data);
             if($result)

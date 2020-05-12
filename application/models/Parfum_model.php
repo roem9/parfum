@@ -787,9 +787,9 @@ class Parfum_model extends CI_MODEL{
 
         public function get_all_penjualan_by_tipe($tipe){
             if($tipe == "Agen")
-                $this->db->select("a.id_penjualan, tgl_penjualan, nama, no_hp, alamat, metode, SUM(harga*qty) as total, nama_agen");
+                $this->db->select("a.id_penjualan, tgl_penjualan, nama, no_hp, alamat, metode, SUM(harga*qty) as total, nama_agen, diskon");
             else
-                $this->db->select("a.id_penjualan, tgl_penjualan, nama, no_hp, alamat, metode, SUM(harga*qty) as total, nama_sales");
+                $this->db->select("a.id_penjualan, tgl_penjualan, nama, no_hp, alamat, metode, SUM(harga*qty) as total, nama_sales, diskon");
 
             $this->db->from("penjualan as a");
             $this->db->join("detail_penjualan as b", "a.id_penjualan = b.id_penjualan", "left");
@@ -1092,38 +1092,7 @@ class Parfum_model extends CI_MODEL{
             $this->db->update("parfum", $data);
         }
         
-        public function edit_penjualan_by_id($id){
-            // if form empty
-                if($this->input->post("adm", true)){
-                    $adm = $this->nominal($this->input->post("adm", true));
-                } else {
-                    $adm = 0;
-                }
-                
-                if($this->input->post("ongkir", true)){
-                    $ongkir = $this->nominal($this->input->post("ongkir", true));
-                } else {
-                    $ongkir = 0;
-                }
-                
-                if($this->input->post("rekening", true)){
-                    $rekening = $this->input->post("rekening", true);
-                } else {
-                    $rekening = '';
-                }
-            // if form empty
-
-            $data = [
-                "tgl_penjualan" => $this->input->post("tgl_penjualan"),
-                "nama" => $this->input->post("nama"),
-                "no_hp" => $this->nominal($this->input->post("no_hp")),
-                "alamat" => $this->nominal($this->input->post("alamat")),
-                "metode" => $this->input->post("metode"),
-                "adm" => $adm,
-                "rekening" => $rekening,
-                "ongkir" => $ongkir
-            ];
-
+        public function edit_penjualan_by_id($id, $data){
             $this->db->where("id_penjualan", $id);
             $this->db->update("penjualan", $data);
         }

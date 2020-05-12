@@ -29,6 +29,7 @@
                         <option value="Laporan Pembelian Barang">Laporan Pembelian Barang</option>
                         <option value="Laporan Pembelian Barang Transfer">Laporan Pembelian Barang Transfer</option>
                         <option value="Laporan Pengeluaran">Laporan Pengeluaran</option>
+                        <option value="Laporan Laba Rugi">Laporan Laba Rugi</option>
                     </select>
                 </div>
                 <div class="form-group">

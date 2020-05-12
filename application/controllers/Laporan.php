@@ -413,9 +413,7 @@ class Laporan extends CI_CONTROLLER{
 
             $data['biaya_kerja'] = $this->Parfum_model->get_biaya_kerja_by_periode($bulan, $tahun);
             $data['biaya_overhead'] = $this->Parfum_model->get_biaya_overhead_by_periode($bulan, $tahun);
-            // $data['other'] = $this->Parfum_model->get_other_by_periode($periode);
 
-            // var_dump($data);
             $this->load->view("laporan/export-hpp", $data);
         } else if($laporan == "Laporan Pengeluaran"){
             
@@ -432,6 +430,91 @@ class Laporan extends CI_CONTROLLER{
 
             // var_dump($data);
             $this->load->view("laporan/export-pengeluaran", $data);
+        } else if($laporan == "Laporan Laba Rugi"){
+            $bulan = $this->input->post("bulan", TRUE);
+            $tahun = $this->input->post("tahun", TRUE);
+            $filename = "Laporan_Pengeluaran_" . $bulan . "_" . $tahun;
+            
+            header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            header('Content-Disposition: attachment;filename='.$filename.'xls');
+
+            $data['title'] = "Laporan Laba Rugi " . $month[$bulan] ." " . $tahun;
+
+            // penjualan diskon dan penjualan
+                $data['penjualan'] = 0;
+                $data['diskon'] = 0;
+                $penjualan = $this->Parfum_model->get_penjualan_by_periode($bulan, $tahun);
+                foreach ($penjualan as $i => $penjualan) {
+                    $data['diskon'] += $penjualan['diskon'];
+                    
+                    $parfum = $this->Parfum_model->get_detail_penjualan_by_id_penjualan($penjualan['id_penjualan']);
+                    $data['data'][$i]['detail']['parfum'] = [];
+                    foreach ($parfum as $j => $parfum) {
+                        $data['penjualan'] += $parfum['harga'] * $parfum['qty'];
+                    }
+                    
+                    $barang = $this->Parfum_model->get_detail_penjualan_barang_by_id_penjualan($penjualan['id_penjualan']);
+                    $data['data'][$i]['detail']['barang'] = [];
+                    foreach ($barang as $j => $barang) {
+                        $data['penjualan'] += $barang['harga'] * $barang['qty'];
+                    }
+                    
+                    $tambahan = $this->Parfum_model->get_detail_tambahan_by_id_penjualan($penjualan['id_penjualan']);
+                    $data['data'][$i]['detail']['tambahan'] = [];
+                    foreach ($tambahan as $j => $tambahan) {
+                        $data['penjualan'] += $tambahan['harga'] * $tambahan['qty'];
+                    }
+                }
+            // penjualan
+            
+            // hpp
+                $bahan_baku_awal = 0;
+                $bahan_baku_awal = $this->Parfum_model->get_persediaan_bahan_baku_awal($bulan, $tahun);
+
+                $bahan_pembantu_awal = 0;
+                $bahan_pembantu_awal = $this->Parfum_model->get_persediaan_bahan_pembantu_awal($bulan, $tahun);
+
+                $total_pembelian = 0;
+                $pembelian_bahan_baku = $this->Parfum_model->get_pembelian_bahan_by_jenis_by_periode("Baku", $bulan, $tahun);
+                foreach ($pembelian_bahan_baku as $i => $data) {
+                    $total_pembelian += $data['total'];
+                }
+
+                $total_pembelian_pembantu = 0;
+                $pembelian_bahan_pembantu = $this->Parfum_model->get_pembelian_bahan_by_jenis_by_periode("Pembantu", $bulan, $tahun);
+                foreach ($pembelian_bahan_pembantu as $i => $data) {
+                    $total_pembelian_pembantu += $data['total'];
+                }
+
+                $bahan_baku_akhir = 0;
+                $bahan_baku_akhir = $this->Parfum_model->get_persediaan_bahan_baku_akhir($bulan, $tahun);
+
+                $bahan_pembantu_akhir = 0;
+                $bahan_pembantu_akhir = $this->Parfum_model->get_persediaan_bahan_pembantu_akhir($bulan, $tahun);
+
+                $total_kerja = 0;
+                $biaya_kerja = $this->Parfum_model->get_biaya_kerja_by_periode($bulan, $tahun);
+                foreach ($biaya_kerja as $kerja) {
+                    $total_kerja += $kerja['nominal'];
+                }
+                
+                $total_overhead = 0;
+                $biaya_overhead = $this->Parfum_model->get_biaya_overhead_by_periode($bulan, $tahun);
+                foreach ($biaya_overhead as $overhead) {
+                    $total_overhead += $overhead['nominal'];
+                }
+
+                $data['hpp'] = 0;
+                $data['hpp'] = $total_pembelian + $bahan_baku_awal - $bahan_baku_akhir + $total_pembelian_pembantu + $bahan_pembantu_awal - $bahan_pembantu_akhir + $total_kerja + $total_overhead;
+            // hpp
+
+            // beban
+                $data['beban'] = $this->Parfum_model->get_pengeluaran_by_periode($bulan, $tahun);
+            // beban
+
+            // var_dump($data);
+            $this->load->view("laporan/export-laba-rugi", $data);
+
         }
     }
 }

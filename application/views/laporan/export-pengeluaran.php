@@ -11,6 +11,8 @@
     <th>Tgl</th>
     <th>Keterangan</th>
     <th>Nominal</th>
+    <th>Metode</th>
+    <th>Rekening</th>
     <tbody>
         <?php 
             $total = 0;
@@ -23,6 +25,8 @@
                 <td><?= $pengeluaran['tgl_pengeluaran']?></td>
                 <td><?= $pengeluaran['keterangan']?></td>
                 <td><?= rupiah($pengeluaran['nominal'])?></td>
+                <td><?= $pengeluaran['metode']?></td>
+                <td><?= $pengeluaran['rekening']?></td>
             </tr>
         <?php endforeach;?>
         <tr>

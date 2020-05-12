@@ -30,6 +30,23 @@
                             <label for="nominal">Nominal</label>
                             <input type="text" name="nominal" id="nominal" class="form-control form-control-sm" required>
                         </div>
+                        <div class="form-group">
+                            <label for="metode">Metode Pembayaran</label>
+                            <select name="metode" id="metode" class="form-control form-control-sm" required>
+                                <option value="">Pilih Metode Pembayaran</option>
+                                <option value="Cash">Cash</option>
+                                <option value="Transfer">Transfer</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="rekening">Rekening</label>
+                            <select name="rekening" id="rekening" class="form-control form-control-sm" disabled>
+                                <option value="">Pilih Rekening</option>
+                                <option value="BCA">BCA</option>
+                                <option value="BRI">BRI</option>
+                                <option value="Mandiri">Mandiri</option>
+                            </select>
+                        </div>
                         <div class="d-flex justify-content-end">
                             <input type="submit" value="Tambah Pemasukan" class="btn btn-sm btn-primary" id="btnSubmitModalAddPemasukan">
                         </div>
@@ -73,6 +90,23 @@
                             <label for="nominal">Nominal</label>
                             <input type="text" name="nominal" id="nominal_edit" class="form-control form-control-sm" required>
                         </div>
+                        <div class="form-group">
+                            <label for="metode">Metode Pembayaran</label>
+                            <select name="metode" id="metode_edit" class="form-control form-control-sm">
+                                <option value="">Pilih Metode Pembayaran</option>
+                                <option value="Cash">Cash</option>
+                                <option value="Transfer">Transfer</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="rekening">Rekening</label>
+                            <select name="rekening" id="rekening_edit" class="form-control form-control-sm" disabled>
+                                <option value="">Pilih Rekening</option>
+                                <option value="BCA">BCA</option>
+                                <option value="BRI">BRI</option>
+                                <option value="Mandiri">Mandiri</option>
+                            </select>
+                        </div>
                         <div class="d-flex justify-content-end">
                             <input type="submit" value="Edit Pemasukan" class="btn btn-sm btn-success" id="btnSubmitModalEditPemasukan">
                         </div>
@@ -99,7 +133,7 @@
     <?php endif; ?>
 
     <!-- DataTales Example -->
-    <div class="card shadow mb-4" style="max-width:750px">
+    <div class="card shadow mb-4" style="max-width:900px">
         <div class="card-header">
             <ul class="nav nav-tabs card-header-tabs">
                 <li class="nav-item">
@@ -116,6 +150,8 @@
                         <th>Nama</th>
                         <th>Keterangan</th>
                         <th>Nominal</th>
+                        <th>Metode</th>
+                        <th>Rekening</th>
                         <th width="10%">edit</th>
                     </thead>
                     <tbody>
@@ -128,6 +164,12 @@
                                     <td><?= $pemasukan['nama']?></td>
                                     <td><?= $pemasukan['keterangan']?></td>
                                     <td><?= rupiah($pemasukan['nominal'])?></td>
+                                    <td><?= $pemasukan['metode']?></td>
+                                    <?php if($pemasukan['metode'] == "Cash"):?>
+                                        <td><center>-</center></td>
+                                    <?php else:?>
+                                        <td><center><?= $pemasukan['rekening']?></center></td>
+                                    <?php endif;?>
                                     <td><a href="#modalEditPemasukan" data-toggle="modal" data-id="<?= $pemasukan['id_pemasukan']?>" class="modalEditPemasukan badge badge-success">edit</a></td>
                                 </tr>
                         <?php endforeach;?>
@@ -140,6 +182,20 @@
 
 <script>
     $("#pemasukan").addClass("active");
+
+    $("select[name='metode']").change(function(){
+        let metode = $(this).val();
+        if(metode == 'Cash'){
+            $("select[name='rekening']").attr('disabled', 'disabled');
+            $("select[name='rekening']").prop('required', false);
+            $("select[name='rekening']").val('');
+        } else if(metode == 'Transfer'){
+            $("select[name='rekening']").removeAttr('disabled');
+            $("select[name='rekening']").prop('required', true);
+            $("select[name='rekening']").val('');
+        }
+    })
+
     $(".modalEditPemasukan").click(function(){
         let id = $(this).data("id");
         $.ajax({
@@ -154,6 +210,21 @@
                 $("#keterangan_edit").val(data.keterangan);
                 $("#nominal_edit").val(data.nominal);
                 $("#nama_edit").val(data.nama);
+                $("#metode_edit").val(data.metode);
+                
+                let metode = data.metode;
+                
+                if(metode == 'Cash'){
+                    $("select[name='rekening']").attr('disabled', 'disabled');
+                    $("select[name='rekening']").prop('required', false);
+                    $("select[name='rekening']").val('');
+                } else if(metode == 'Transfer'){
+                    $("select[name='rekening']").removeAttr('disabled');
+                    $("select[name='rekening']").prop('required', true);
+                    $("select[name='rekening']").val('');
+                    
+                    $("#rekening_edit").val(data.rekening);
+                }
             }
         })
     })

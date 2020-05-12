@@ -80,13 +80,14 @@ class Kasir extends CI_CONTROLLER{
                 "id_penjualan" => $id,
                 "tgl_penjualan" => $this->input->post("tgl_penjualan"),
                 "nama" => $this->input->post("nama"),
-                "no_hp" => $this->nominal($this->input->post("no_hp")),
-                "alamat" => $this->nominal($this->input->post("alamat")),
+                "no_hp" => $this->input->post("no_hp"),
+                "alamat" => $this->input->post("alamat"),
                 "metode" => $this->input->post("metode"),
                 "adm" => $adm,
                 "rekening" => $rekening,
                 "ongkir" => $ongkir,
-                "tipe" => $tipe
+                "tipe" => $tipe,
+                "diskon" => $this->nominal($this->input->post("diskon", TRUE))
             ];
 
             $this->Parfum_model->add_penjualan($data);
@@ -154,7 +155,40 @@ class Kasir extends CI_CONTROLLER{
         public function edit_penjualan_by_id(){
             $id = $this->input->post("id_penjualan");
             $tipe = $this->input->post("tipe", TRUE);
-            $this->Parfum_model->edit_penjualan_by_id($id);
+            
+            // if form empty
+                if($this->input->post("adm", true)){
+                    $adm = $this->nominal($this->input->post("adm", true));
+                } else {
+                    $adm = 0;
+                }
+                
+                if($this->input->post("ongkir", true)){
+                    $ongkir = $this->nominal($this->input->post("ongkir", true));
+                } else {
+                    $ongkir = 0;
+                }
+                
+                if($this->input->post("rekening", true)){
+                    $rekening = $this->input->post("rekening", true);
+                } else {
+                    $rekening = '';
+                }
+            // if form empty
+
+            $data = [
+                "tgl_penjualan" => $this->input->post("tgl_penjualan"),
+                "nama" => $this->input->post("nama"),
+                "no_hp" => $this->input->post("no_hp"),
+                "alamat" => $this->input->post("alamat"),
+                "metode" => $this->input->post("metode"),
+                "adm" => $adm,
+                "rekening" => $rekening,
+                "ongkir" => $ongkir,
+                "diskon" => $this->nominal($this->input->post("diskon", TRUE))
+            ];
+
+            $this->Parfum_model->edit_penjualan_by_id($id, $data);
 
             if($tipe == "Agen"){
                 $data = [

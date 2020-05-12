@@ -69,6 +69,10 @@
                                         <textarea name="alamat" id="alamat" rows="5" class="form-control form-control-sm" required></textarea>
                                     </div>
                                     <div class="form-group">
+                                        <label for="diskon">Diskon</label>
+                                        <input type="text" name="diskon" id="diskon" class="form-control form-control-sm">
+                                    </div>
+                                    <div class="form-group">
                                         <label for="metode">Metode Pembayaran</label>
                                         <select name="metode" id="metode" class="form-control form-control-sm" required>
                                             <option value="">Pilih Metode Pembayaran</option>
@@ -259,6 +263,10 @@
                                 <div class="form-group">
                                     <label for="alamat">Alamat Lengkap</label>
                                     <textarea name="alamat" id="alamat_edit" rows="5" class="form-control form-control-sm"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="diskon">Diskon</label>
+                                    <input type="text" name="diskon" id="diskon_edit" class="form-control form-control-sm">
                                 </div>
                                 <div class="form-group">
                                     <label for="metode">Metode Pembayaran</label>
@@ -497,6 +505,7 @@
                         <?php else:?>
                             <th>Sales</th>
                         <?php endif;?>
+                        <th>Diskon</th>
                         <th width="8%">detail</th>
                     </thead>
                     <tbody>
@@ -515,6 +524,7 @@
                                     <?php else:?>
                                         <td><?= $penjualan['nama_sales']?></td>
                                     <?php endif;?>
+                                    <td><?= rupiah($penjualan['diskon'])?></td>
                                     <td><a href="#modalEditPenjualan" class="badge badge-warning modal-detail-penjualan" data-toggle="modal" data-id="<?= $penjualan['id_penjualan']?>">detail</a></td>
                                 </tr>
                         <?php endforeach;?>
@@ -603,6 +613,7 @@
                 $("#tgl_penjualan_edit").val(data.tgl_penjualan);
                 $("#nama_edit").val(data.nama);
                 $("#no_hp_edit").val(data.no_hp);
+                $("#diskon_edit").val(data.diskon);
                 $("#alamat_edit").val(data.alamat);
                 $("#metode_edit").val(data.metode);
                 
@@ -1211,6 +1222,10 @@
     //validation
         $("input[name='adm']").keyup(function(){
             $("input[name='adm']").val(formatRupiah(this.value, 'Rp. '))
+        })
+        
+        $("input[name='diskon']").keyup(function(){
+            $("input[name='diskon']").val(formatRupiah(this.value, 'Rp. '))
         })
 
         $("input[name='ongkir']").keyup(function(){

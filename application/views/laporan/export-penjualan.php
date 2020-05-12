@@ -97,7 +97,7 @@
             endforeach;?>
         <tr>
             <td colspan="4">Total</td>
-            <td><?= $to?></td>
+            <td><?= rupiah($to)?></td>
         </tr>
     </tbody>
 </table>
@@ -109,6 +109,8 @@
     <th>Nama</th>
     <th>Keterangan</th>
     <th>Nominal</th>
+    <th>Metode</th>
+    <th>Rekening</th>
     <tbody>
         <?php 
             $total = 0;
@@ -122,6 +124,8 @@
                 <td><?= $shopee['nama']?></td>
                 <td><?= $shopee['keterangan']?></td>
                 <td><?= rupiah($shopee['nominal'])?></td>
+                <td><?= $shopee['metode']?></td>
+                <td><?= $shopee['rekening']?></td>
             </tr>
         <?php endforeach;?>
         <tr>
@@ -138,6 +142,8 @@
     <th>Nama</th>
     <th>Keterangan</th>
     <th>Nominal</th>
+    <th>Metode</th>
+    <th>Rekening</th>
     <tbody>
         <?php 
             $total = 0;
@@ -151,6 +157,8 @@
                 <td><?= $agen['nama']?></td>
                 <td><?= $agen['keterangan']?></td>
                 <td><?= rupiah($agen['nominal'])?></td>
+                <td><?= $shopee['metode']?></td>
+                <td><?= $shopee['rekening']?></td>
             </tr>
         <?php endforeach;?>
         <tr>
