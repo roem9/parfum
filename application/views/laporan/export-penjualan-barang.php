@@ -5,9 +5,9 @@
         return $hasil_rupiah;
     }
 ?>
-<h1><?= "Periode " . $title?></h1>
+<h3><?= "Periode " . $title?></h3>
 <?php if($barang):?>
-    <h1>Penjualan Barang</h1>
+    <h3>Penjualan Barang</h3>
     <table class="table table-sm" border=1 style="border-collapse: collapse">
         <tr>
             <th>No</th>
@@ -20,9 +20,9 @@
                 foreach ($barang as $data) :
                 ?>
                 <tr>
-                    <td><?= ++$no?></td>
+                    <td><center><?= ++$no?></center></td>
                     <td><?= $data['nama_barang']?></td>
-                    <td><?= $data['total']?></td>
+                    <td><center><?= $data['total']?></center></td>
                 </tr>
             <?php endforeach;?>
         </tbody>
@@ -31,7 +31,7 @@
 
 
 <?php if($parfum):?>
-    <h1>Penjualan Parfum</h1>
+    <h3>Penjualan Parfum</h3>
     <table class="table table-sm" border=1 style="border-collapse: collapse">
         <tr>
             <th>No</th>
@@ -44,9 +44,9 @@
                 foreach ($parfum as $data) :
                 ?>
                 <tr>
-                    <td><?= ++$no?></td>
+                    <td><center><?= ++$no?></center></td>
                     <td><?= $data['nama_parfum']?></td>
-                    <td><?= $data['total']?></td>
+                    <td><center><?= $data['total']?></center></td>
                 </tr>
             <?php endforeach;?>
         </tbody>
@@ -54,7 +54,7 @@
 <?php endif;?>
 
 <?php if($tambahan):?>
-    <h1>Penjualan Bahan Tambahan</h1>
+    <h3>Penjualan Bahan Tambahan</h3>
     <table class="table table-sm" border=1 style="border-collapse: collapse">
         <tr>
             <th>No</th>
@@ -67,9 +67,9 @@
                 foreach ($tambahan as $data) :
                 ?>
                 <tr>
-                    <td><?= ++$no?></td>
+                    <td><center><?= ++$no?></center></td>
                     <td><?= $data['nama_bahan']?></td>
-                    <td><?= $data['total']?></td>
+                    <td><center><?= $data['total']?></center></td>
                 </tr>
             <?php endforeach;?>
         </tbody>

@@ -5,7 +5,7 @@
         return $hasil_rupiah;
     }
 ?>
-<h1><?= $title?></h1>
+<h3><?= $title?></h3>
 <table border=1>
     <th>No</th>
     <th>Tgl</th>
@@ -29,9 +29,11 @@
                 <td><?= $pengeluaran['rekening']?></td>
             </tr>
         <?php endforeach;?>
-        <tr>
+        <tr style="background-color: yellow">
             <td colspan=3>Total</td>
             <td><?= rupiah($total)?></td>
+            <td></td>
+            <td></td>
         </tr>
     </tbody>
 </table>

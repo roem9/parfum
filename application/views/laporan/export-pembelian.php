@@ -5,7 +5,7 @@
         return $hasil_rupiah;
     }
 ?>
-<h1><?= $title?></h1>
+<h3><?= $title?></h3>
 <table class="table table-sm" border=1 style="border-collapse: collapse">
     <tr>
         <th rowspan="2">No</th>

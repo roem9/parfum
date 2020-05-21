@@ -5,9 +5,9 @@
         return $hasil_rupiah;
     }
 ?>
-<h1><?= "Periode " . $title?></h1>
+<h3><?= $title?></h3>
 <?php if($bca):?>
-    <h1>Transfer BCA</h1>
+    <h3>Transfer BCA</h3>
     <table class="table table-sm" border=1 style="border-collapse: collapse">
         <tr>
             <th>No</th>
@@ -40,7 +40,7 @@
             <?php 
                 // exit();
                 endforeach;?>
-                <tr>
+                <tr style="background-color: yellow">
                     <td colspan="4">Total</td>
                     <?php 
                         $to = 0;
@@ -56,7 +56,7 @@
 
 
 <?php if($bri):?>
-    <h1>Transfer BRI</h1>
+    <h3>Transfer BRI</h3>
     <table class="table table-sm" border=1 style="border-collapse: collapse">
         <tr>
             <th>No</th>
@@ -89,7 +89,7 @@
             <?php 
                 // exit();
                 endforeach;?>
-                <tr>
+                <tr style="background-color: yellow">
                     <td colspan="4">Total</td>
                     <?php 
                         $to = 0;
@@ -105,7 +105,7 @@
 
 
 <?php if($mandiri):?>
-    <h1>Transfer Mandiri</h1>
+    <h3>Transfer Mandiri</h3>
     <table class="table table-sm" border=1 style="border-collapse: collapse">
         <tr>
             <th>No</th>
@@ -138,7 +138,7 @@
             <?php 
                 // exit();
                 endforeach;?>
-                <tr>
+                <tr style="background-color: yellow">
                     <td colspan="4">Total</td>
                     <?php 
                         $to = 0;

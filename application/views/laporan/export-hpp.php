@@ -9,7 +9,7 @@
 
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800 mt-3"><?= $title?></h1>
+        <h3 class="h3 mb-0 text-gray-800 mt-3"><?= $title?></h3>
     </div>
 
     <?php if( $this->session->flashdata('pesan') ) : ?>

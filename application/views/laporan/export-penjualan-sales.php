@@ -5,12 +5,12 @@
         return $hasil_rupiah;
     }
 ?>
-<h1><?= $title?></h1>
+<h3><?= $title?></h3>
 
 <?php foreach ($data as $i => $data) :?>
     <table class="table table-sm" border=1 style="border-collapse: collapse">
         <tr>
-            <?php if($title == "Laporan Penjualan Agen"):?>
+            <?php if($agen_sales == "Agen"):?>
                 <th colspan="7"><?= $data['nama_agen']?></th>
             <?php else:?>
                 <th colspan="7"><?= $data['nama_sales']?></th>
@@ -111,11 +111,14 @@
                 <td colspan="4">Total</td>
                 <td><?= rupiah($to)?></td>
             </tr>
-            <tr>
-                <td colspan="4">Total Botol</td>
-                <td><?= $to_qty?></td>
-                <td colspan="2"><?= rupiah(6500 * $to_qty)?></td>
-            </tr>
+            <?php if($agen_sales == "Sales"):?>
+                <tr style="background-color: yellow">
+                    <td colspan="4">Total Botol</td>
+                    <td><?= $to_qty?></td>
+                    <td></td>
+                    <td colspan="2"><?= rupiah(6500 * $to_qty)?></td>
+                </tr>
+            <?php endif;?>
         </tbody>
     </table>
     <br>

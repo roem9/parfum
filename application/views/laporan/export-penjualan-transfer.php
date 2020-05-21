@@ -6,10 +6,10 @@
     }
 ?>
 
-<h1><?= "Periode " . $title?></h1>
+<h3><?= "Periode " . $title?></h3>
 
 <?php if($bca):?>
-    <h1>Transfer BCA</h1>
+    <h3>Transfer BCA</h3>
     <table class="table table-sm" border=1 style="border-collapse: collapse">
         <tr>
             <th>No</th>
@@ -17,12 +17,15 @@
             <th>Nama</th>
             <th>Transaksi</th>
             <th>Total</th>
+            <th>Diskon</th>
         </tr>
         <tbody>
             <?php 
                 $no = 0;
+                $diskon_bca = 0;
                 foreach ($bca as $i => $data) :
                     $bca[$i] = 0;
+                    $diskon_bca += $data['diskon'];
 
                     foreach ($data['detail']['barang'] as $j => $barang){
                         $bca[$i] += $barang['harga'] * $barang['qty'];
@@ -42,11 +45,12 @@
                     <td><?= $data['nama']?></td>
                     <td><?= $data['metode']?></td>
                     <td><?= rupiah($bca[$i])?></td>
+                    <td><?= rupiah($data['diskon'])?></td>
                 </tr>
             <?php 
                 // exit();
                 endforeach;?>
-                <tr>
+                <tr style="background-color: yellow">
                     <td colspan="4">Total</td>
                     <?php 
                         $to = 0;
@@ -55,6 +59,8 @@
                         }
                     ?>
                     <td><?= rupiah($to)?></td>
+                    <td><?= rupiah($diskon_bca)?></td>
+                    <td><?= rupiah($to - $diskon_bca)?></td>
                 </tr>
         </tbody>
     </table>
@@ -62,7 +68,7 @@
 
 
 <?php if($bri):?>
-    <h1>Transfer BRI</h1>
+    <h3>Transfer BRI</h3>
     <table class="table table-sm" border=1 style="border-collapse: collapse">
         <tr>
             <th>No</th>
@@ -70,12 +76,15 @@
             <th>Nama</th>
             <th>Transaksi</th>
             <th>Total</th>
+            <th>Diskon</th>
         </tr>
         <tbody>
             <?php 
                 $no = 0;
+                $diskon_bri = 0;
                 foreach ($bri as $i => $data) :
                     $bri[$i] = 0;
+                    $diskon_bri += $data['diskon'];
 
                     foreach ($data['detail']['barang'] as $j => $barang){
                         $bri[$i] += $barang['harga'] * $barang['qty'];
@@ -95,11 +104,12 @@
                     <td><?= $data['nama']?></td>
                     <td><?= $data['metode']?></td>
                     <td><?= rupiah($bri[$i])?></td>
+                    <td><?= rupiah($data['diskon'])?></td>
                 </tr>
             <?php 
                 // exit();
                 endforeach;?>
-                <tr>
+                <tr style="background-color: yellow">
                     <td colspan="4">Total</td>
                     <?php 
                         $to = 0;
@@ -108,6 +118,8 @@
                         }
                     ?>
                     <td><?= rupiah($to)?></td>
+                    <td><?= rupiah($diskon_bri)?></td>
+                    <td><?= rupiah($to - $diskon_bri)?></td>
                 </tr>
         </tbody>
     </table>
@@ -115,7 +127,7 @@
 
 
 <?php if($mandiri):?>
-    <h1>Transfer Mandiri</h1>
+    <h3>Transfer Mandiri</h3>
     <table class="table table-sm" border=1 style="border-collapse: collapse">
         <tr>
             <th>No</th>
@@ -123,12 +135,15 @@
             <th>Nama</th>
             <th>Transaksi</th>
             <th>Total</th>
+            <th>Diskon</th>
         </tr>
         <tbody>
             <?php 
                 $no = 0;
+                $diskon_mandiri = 0;
                 foreach ($mandiri as $i => $data) :
                     $mandiri[$i] = 0;
+                    $diskon_mandiri += $data['diskon'];
 
                     foreach ($data['detail']['barang'] as $j => $barang){
                         $mandiri[$i] += $barang['harga'] * $barang['qty'];
@@ -148,11 +163,12 @@
                     <td><?= $data['nama']?></td>
                     <td><?= $data['metode']?></td>
                     <td><?= rupiah($mandiri[$i])?></td>
+                    <td><?= rupiah($data['diskon'])?></td>
                 </tr>
             <?php 
                 // exit();
                 endforeach;?>
-                <tr>
+                <tr style="background-color: yellow">
                     <td colspan="4">Total</td>
                     <?php 
                         $to = 0;
@@ -161,6 +177,8 @@
                         }
                     ?>
                     <td><?= rupiah($to)?></td>
+                    <td><?= rupiah($diskon_mandiri)?></td>
+                    <td><?= rupiah($to - $diskon_mandiri)?></td>
                 </tr>
         </tbody>
     </table>

@@ -3,6 +3,7 @@ class Laporan extends CI_CONTROLLER{
     public function __construct(){
         parent::__construct();
         $this->load->model("Parfum_model");
+        $this->load->model("Main_model");
         ini_set('xdebug.var_display_max_depth', '10');
         ini_set('xdebug.var_display_max_children', '256');
         ini_set('xdebug.var_display_max_data', '1024');
@@ -12,48 +13,13 @@ class Laporan extends CI_CONTROLLER{
         $data['title'] = "Cetak Laporan";
         
         $data['month'] = ["1" => "Januari", "2" => "Februari", "3" => "Maret", "4" => "April", "5" => "Mei", "6" => "Juni", "7" => "Juli", "8" => "Agustus", "9" => "September", "10" => "Oktober", "11" => "November", "12" => "Desember"];
-
-        // $data['periode'] = $this->Parfum_model->get_periode();
-
-        // var_dump($periode);
-
         $this->load->view("templates/header", $data);
         $this->load->view("templates/sidebar");
         $this->load->view("laporan/form-laporan", $data);
         $this->load->view("templates/footer");
     }
 
-    public function hpp($periode){
-        $date = explode("%20", $periode);
-
-        $month = ["1" => "Januari", "2" => "Februari", "3" => "Maret", "4" => "April", "5" => "Mei", "6" => "Juni", "7" => "Juli", "8" => "Agustus", "9" => "September", "10" => "Oktober", "11" => "November", "12" => "Desember"];
-
-        $data['title'] = "Laporan HPP " . $month[$date['0']] ." " . $date['1'];
-
-        $data['bahan_baku_awal'] = $this->Parfum_model->get_persediaan_bahan_baku_awal($periode);
-        $data['bahan_pembantu_awal'] = $this->Parfum_model->get_persediaan_bahan_pembantu_awal($periode);
-
-        $data['pembelian_bahan_baku'] = $this->Parfum_model->get_pembelian_bahan_by_jenis_by_periode("Baku", $periode);
-
-        $data['pembelian_bahan_pembantu'] = $this->Parfum_model->get_pembelian_bahan_by_jenis_by_periode("Pembantu", $periode);
-
-        $data['bahan_baku_akhir'] = $this->Parfum_model->get_persediaan_bahan_baku_akhir($periode);
-        $data['bahan_pembantu_akhir'] = $this->Parfum_model->get_persediaan_bahan_pembantu_akhir($periode);
-
-        $data['biaya_kerja'] = $this->Parfum_model->get_biaya_kerja_by_periode($periode);
-        $data['biaya_overhead'] = $this->Parfum_model->get_biaya_overhead_by_periode($periode);
-        // $data['other'] = $this->Parfum_model->get_other_by_periode($periode);
-
-        // var_dump($data);
-        
-        $this->load->view("templates/header", $data);
-        $this->load->view("templates/sidebar");
-        $this->load->view("laporan/export-hpp", $data);
-        $this->load->view("templates/footer");
-    }
-
     public function cetak_laporan(){
-        
         $month = ["1" => "Januari", "2" => "Februari", "3" => "Maret", "4" => "April", "5" => "Mei", "6" => "Juni", "7" => "Juli", "8" => "Agustus", "9" => "September", "10" => "Oktober", "11" => "November", "12" => "Desember"];
         $laporan = $this->input->post("laporan", TRUE);
 
@@ -68,7 +34,9 @@ class Laporan extends CI_CONTROLLER{
 
             $data['bca'] = [];
 
-            $penjualan = $this->Parfum_model->get_penjualan_transfer_by_periode($bulan, $tahun, "BCA");
+            // penjualan transfer ke bca by periode
+            $where = ["MONTH(tgl_penjualan)" => $bulan, "YEAR(tgl_penjualan)" => $tahun, "metode" => "transfer", "rekening" => "BCA"];
+            $penjualan = $this->Main_model->get_all("penjualan", $where);
             foreach ($penjualan as $i => $penjualan) {
                 $data['bca'][$i] = $penjualan;
                 
@@ -89,12 +57,12 @@ class Laporan extends CI_CONTROLLER{
                 foreach ($tambahan as $j => $tambahan) {
                     $data['bca'][$i]['detail']['tambahan'][$j] = $tambahan;
                 }
-                // $data['data'][$i]['detail'] = 
             }
             
             $data['bri'] = [];
-
-            $penjualan = $this->Parfum_model->get_penjualan_transfer_by_periode($bulan, $tahun, "BRI");
+            // penjualan transfer ke bri by periode
+            $where = ["MONTH(tgl_penjualan)" => $bulan, "YEAR(tgl_penjualan)" => $tahun, "metode" => "transfer", "rekening" => "BRI"];
+            $penjualan = $this->Main_model->get_all("penjualan", $where);
             foreach ($penjualan as $i => $penjualan) {
                 $data['bri'][$i] = $penjualan;
                 
@@ -115,11 +83,12 @@ class Laporan extends CI_CONTROLLER{
                 foreach ($tambahan as $j => $tambahan) {
                     $data['bri'][$i]['detail']['tambahan'][$j] = $tambahan;
                 }
-                // $data['data'][$i]['detail'] = 
             }
             
             $data['mandiri'] = [];
-            $penjualan = $this->Parfum_model->get_penjualan_transfer_by_periode($bulan, $tahun, "Mandiri");
+            // penjualan transfer ke mandiri by periode
+            $where = ["MONTH(tgl_penjualan)" => $bulan, "YEAR(tgl_penjualan)" => $tahun, "metode" => "transfer", "rekening" => "Mandiri"];
+            $penjualan = $this->Main_model->get_all("penjualan", $where);
             foreach ($penjualan as $i => $penjualan) {
                 $data['mandiri'][$i] = $penjualan;
                 
@@ -140,9 +109,7 @@ class Laporan extends CI_CONTROLLER{
                 foreach ($tambahan as $j => $tambahan) {
                     $data['mandiri'][$i]['detail']['tambahan'][$j] = $tambahan;
                 }
-                // $data['data'][$i]['detail'] = 
             }
-
             $this->load->view("laporan/export-penjualan-transfer", $data);
 
         } else if($laporan == "Laporan Penjualan Keseluruhan"){
@@ -156,10 +123,10 @@ class Laporan extends CI_CONTROLLER{
 
             $data['data'] = [];
 
-            $penjualan = $this->Parfum_model->get_penjualan_by_periode($bulan, $tahun);
+            // penjualan by periode
+            $penjualan = $this->Main_model->get_all("penjualan", ["MONTH(tgl_penjualan)" => $bulan, "YEAR(tgl_penjualan)" => $tahun]);
             foreach ($penjualan as $i => $penjualan) {
                 $data['data'][$i] = $penjualan;
-                
                 $parfum = $this->Parfum_model->get_detail_penjualan_by_id_penjualan($penjualan['id_penjualan']);
                 $data['data'][$i]['detail']['parfum'] = [];
                 foreach ($parfum as $j => $parfum) {
@@ -177,17 +144,18 @@ class Laporan extends CI_CONTROLLER{
                 foreach ($tambahan as $j => $tambahan) {
                     $data['data'][$i]['detail']['tambahan'][$j] = $tambahan;
                 }
-                // $data['data'][$i]['detail'] = 
             }
-
-            $data['shopee'] = $this->Parfum_model->get_pemasukan_by_periode_by_keterangan($bulan, $tahun, "Shopee");
-            $data['agen'] = $this->Parfum_model->get_pemasukan_by_periode_by_keterangan($bulan, $tahun, "Agen");
+            // pemasukan dari shopee per periode
+            $data['shopee'] = $this->Main_model->get_all("pemasukan", ["MONTH(tgl_pemasukan)" => $bulan, "YEAR(tgl_pemasukan)" => $tahun, "keterangan" => "Shopee"]);
+            // pemasukan dari agen per periode
+            $data['agen'] = $this->Main_model->get_all("pemasukan", ["MONTH(tgl_pemasukan)" => $bulan, "YEAR(tgl_pemasukan)" => $tahun, "keterangan" => "Agen"]);
 
             $this->load->view("laporan/export-penjualan", $data);
         } else if($laporan == "Laporan Penjualan Sales"){
+            $data['agen_sales'] = "Sales";
             $bulan = $this->input->post("bulan", TRUE);
             $tahun = $this->input->post("tahun", TRUE);
-            $data['title'] = "Laporan Penjualan Sales " . $month[$bulan] . $tahun;
+            $data['title'] = "Laporan Penjualan Sales " . $month[$bulan] . " " . $tahun;
             $filename = "Penjualan_Sales_" . $bulan . "_" . $tahun;
             header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             header('Content-Disposition: attachment;filename='.$filename.'xls');
@@ -221,13 +189,14 @@ class Laporan extends CI_CONTROLLER{
                 }
             }
             $this->load->view("laporan/export-penjualan-sales", $data);
+        } else if($laporan == "Laporan Penjualan Agen"){
+            $data['agen_sales'] = "Agen";
             $bulan = $this->input->post("bulan", TRUE);
             $tahun = $this->input->post("tahun", TRUE);
-        } else if($laporan == "Laporan Penjualan Agen"){
             $filename = "Penjualan_Agen_" . $bulan . "_" . $tahun;
             header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             header('Content-Disposition: attachment;filename='.$filename.'xls');
-            $data['title'] = "Laporan Penjualan Agen " . $month[$bulan] . $tahun;
+            $data['title'] = "Laporan Penjualan Agen " . $month[$bulan] . " " . $tahun;
             
             $data['data'] = [];
 
@@ -284,15 +253,14 @@ class Laporan extends CI_CONTROLLER{
                     $data['data'][$i]['detail']['tambahan'][$j] = $tambahan;
                 }
             }
-            // var_dump($data);
             $this->load->view("laporan/export-pembelian", $data);
         } else if($laporan == "Laporan Pembelian Barang Transfer"){
             $bulan = $this->input->post("bulan", TRUE);
             $tahun = $this->input->post("tahun", TRUE);
             
             $filename = "Pembelian_Transfer_" . $bulan . "_" . $tahun;
-            // header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-            // header('Content-Disposition: attachment;filename='.$filename.'xls');
+            header("Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            header('Content-Disposition: attachment;filename='.$filename.'xls');
 
             $data['title'] = "Laporan Pembelian " . $month[$bulan] ." " . $tahun;
 
@@ -313,7 +281,6 @@ class Laporan extends CI_CONTROLLER{
                 foreach ($tambahan as $j => $tambahan) {
                     $data['bca'][$i]['detail']['tambahan'][$j] = $tambahan;
                 }
-                // $data['data'][$i]['detail'] = 
             }
             
             $data['bri'] = [];
@@ -333,7 +300,6 @@ class Laporan extends CI_CONTROLLER{
                 foreach ($tambahan as $j => $tambahan) {
                     $data['bri'][$i]['detail']['tambahan'][$j] = $tambahan;
                 }
-                // $data['data'][$i]['detail'] = 
             }
             
             $data['mandiri'] = [];
@@ -352,9 +318,7 @@ class Laporan extends CI_CONTROLLER{
                 foreach ($tambahan as $j => $tambahan) {
                     $data['mandiri'][$i]['detail']['tambahan'][$j] = $tambahan;
                 }
-                // $data['data'][$i]['detail'] = 
             }
-            // var_dump($data);
             $this->load->view("laporan/export-pembelian-transfer", $data);
         } else if($laporan == "Laporan Penjualan Barang"){
             $bulan = $this->input->post("bulan", TRUE);
@@ -369,29 +333,26 @@ class Laporan extends CI_CONTROLLER{
             $penjualan = $this->Parfum_model->get_penjualan_barang_by_periode($bulan, $tahun);
             $data['barang'] = [];
             foreach ($penjualan as $i => $penjualan) {
-                $data['barang'][$i] = $this->Parfum_model->get_barang_by_id($penjualan['id_barang']);
+                $data['barang'][$i] = $this->Main_model->get_one("barang", ["id_barang" => $penjualan['id_barang']]);
                 $data['barang'][$i]['total'] = $penjualan['total'];
             }
             
             $penjualan = $this->Parfum_model->get_penjualan_parfum_by_periode($bulan, $tahun);
             $data['parfum'] = [];
             foreach ($penjualan as $i => $penjualan) {
-                $data['parfum'][$i] = $this->Parfum_model->get_parfum_by_id($penjualan['id_parfum']);
+                $data['parfum'][$i] = $this->Main_model->get_one("parfum", ["id_parfum" => $penjualan['id_parfum']]);
                 $data['parfum'][$i]['total'] = $penjualan['total'];
             }
             
             $penjualan = $this->Parfum_model->get_penjualan_tambahan_by_periode($bulan, $tahun);
             $data['tambahan'] = [];
             foreach ($penjualan as $i => $penjualan) {
-                $data['tambahan'][$i] = $this->Parfum_model->get_bahan_by_id($penjualan['id_bahan']);
+                $data['tambahan'][$i] = $this->Main_model->get_one("bahan", ["id_bahan" => $penjualan['id_bahan']]);
                 $data['tambahan'][$i]['total'] = $penjualan['total'];
             }
 
             $this->load->view("laporan/export-penjualan-barang", $data);
-            // var_dump($data);
-
         } else if($laporan == "Laporan HPP"){
-            
             $bulan = $this->input->post("bulan", TRUE);
             $tahun = $this->input->post("tahun", TRUE);
             $filename = "Laporan_HPP_" . $bulan . "_" . $tahun;
@@ -411,8 +372,10 @@ class Laporan extends CI_CONTROLLER{
             $data['bahan_baku_akhir'] = $this->Parfum_model->get_persediaan_bahan_baku_akhir($bulan, $tahun);
             $data['bahan_pembantu_akhir'] = $this->Parfum_model->get_persediaan_bahan_pembantu_akhir($bulan, $tahun);
 
-            $data['biaya_kerja'] = $this->Parfum_model->get_biaya_kerja_by_periode($bulan, $tahun);
-            $data['biaya_overhead'] = $this->Parfum_model->get_biaya_overhead_by_periode($bulan, $tahun);
+            // biaya overhead gaji per periode
+            $data['biaya_kerja'] = $this->Main_model->get_all("biaya_overhead", ["MONTH(tgl)" => $bulan, "YEAR(tgl)" => $tahun, "jenis" => "Gaji"]);
+            // biaya overhead selain gaji per periode
+            $data['biaya_overhead'] = $this->Main_model->get_all("biaya_overhead", ["MONTH(tgl)" => $bulan, "YEAR(tgl)" => $tahun, "jenis != " => "Gaji"]);
 
             $this->load->view("laporan/export-hpp", $data);
         } else if($laporan == "Laporan Pengeluaran"){
@@ -426,9 +389,8 @@ class Laporan extends CI_CONTROLLER{
 
             $data['title'] = "Laporan Pengeluaran Lain-Lain " . $month[$bulan] ." " . $tahun;
 
-            $data['pengeluaran'] = $this->Parfum_model->get_pengeluaran_by_periode($bulan, $tahun);
+            $data['pengeluaran'] = $this->Main_model->get_all("pengeluaran", ["MONTH(tgl_pengeluaran)" => $bulan, "YEAR(tgl_pengeluaran)" => $tahun]);
 
-            // var_dump($data);
             $this->load->view("laporan/export-pengeluaran", $data);
         } else if($laporan == "Laporan Laba Rugi"){
             $bulan = $this->input->post("bulan", TRUE);
@@ -443,7 +405,7 @@ class Laporan extends CI_CONTROLLER{
             // penjualan diskon dan penjualan
                 $data['penjualan'] = 0;
                 $data['diskon'] = 0;
-                $penjualan = $this->Parfum_model->get_penjualan_by_periode($bulan, $tahun);
+                $penjualan = $this->Main_model->get_all("penjualan", ["MONTH(tgl_penjualan)" => $bulan, "YEAR(tgl_penjualan)" => $tahun]);
                 foreach ($penjualan as $i => $penjualan) {
                     $data['diskon'] += $penjualan['diskon'];
                     
@@ -476,30 +438,29 @@ class Laporan extends CI_CONTROLLER{
 
                 $total_pembelian = 0;
                 $pembelian_bahan_baku = $this->Parfum_model->get_pembelian_bahan_by_jenis_by_periode("Baku", $bulan, $tahun);
-                foreach ($pembelian_bahan_baku as $i => $data) {
-                    $total_pembelian += $data['total'];
+                foreach ($pembelian_bahan_baku as $i => $cek) {
+                    $total_pembelian += $cek['total'];
                 }
 
                 $total_pembelian_pembantu = 0;
                 $pembelian_bahan_pembantu = $this->Parfum_model->get_pembelian_bahan_by_jenis_by_periode("Pembantu", $bulan, $tahun);
-                foreach ($pembelian_bahan_pembantu as $i => $data) {
-                    $total_pembelian_pembantu += $data['total'];
+                foreach ($pembelian_bahan_pembantu as $i => $cek) {
+                    $total_pembelian_pembantu += $cek['total'];
                 }
 
                 $bahan_baku_akhir = 0;
                 $bahan_baku_akhir = $this->Parfum_model->get_persediaan_bahan_baku_akhir($bulan, $tahun);
-
                 $bahan_pembantu_akhir = 0;
                 $bahan_pembantu_akhir = $this->Parfum_model->get_persediaan_bahan_pembantu_akhir($bulan, $tahun);
 
                 $total_kerja = 0;
-                $biaya_kerja = $this->Parfum_model->get_biaya_kerja_by_periode($bulan, $tahun);
+                $biaya_kerja = $this->Main_model->get_all("biaya_overhead", ["MONTH(tgl)" => $bulan, "YEAR(tgl)" => $tahun, "jenis" => "Gaji"]);
                 foreach ($biaya_kerja as $kerja) {
                     $total_kerja += $kerja['nominal'];
                 }
                 
                 $total_overhead = 0;
-                $biaya_overhead = $this->Parfum_model->get_biaya_overhead_by_periode($bulan, $tahun);
+                $biaya_overhead = $this->Main_model->get_all("biaya_overhead", ["MONTH(tgl)" => $bulan, "YEAR(tgl)" => $tahun, "jenis !=" => "Gaji"]);
                 foreach ($biaya_overhead as $overhead) {
                     $total_overhead += $overhead['nominal'];
                 }
@@ -509,18 +470,10 @@ class Laporan extends CI_CONTROLLER{
             // hpp
 
             // beban
-                $data['beban'] = $this->Parfum_model->get_pengeluaran_by_periode($bulan, $tahun);
+                $data['beban'] = $this->Main_model->get_all("pengeluaran", ["MONTH(tgl_pengeluaran)" => $bulan, "YEAR(tgl_pengeluaran)" => $tahun]);
             // beban
 
-            // var_dump($data);
             $this->load->view("laporan/export-laba-rugi", $data);
-
         }
     }
 }
-
-
-
-// <option value="Penjualan">Laporan Penjualan Keseluruhan</option>
-// <option value="Pembelian">Laporan Pembelian Keseluruhan</option>
-// <option value="Barang">Laporan Penjualan Barang</option>
